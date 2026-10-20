@@ -122,12 +122,17 @@ type Theme struct {
 	Seeds       []string `json:"seeds" desc:"Extracted or hand-picked chips as #rrggbb." max:"48"`
 	HarmonyMode string   `json:"harmonyMode" desc:"How secondary and tertiary hues relate to primary." enum:"best|complement|analogous|triad|split|square|tetradic"`
 	// Palette is the index into the ranked mini palettes; 0 is the best.
-	Palette     int     `json:"palette" min:"0" max:"40"`
-	Steps       int     `json:"steps" desc:"Tones per ramp." min:"3" max:"20"`
-	ToneBias    float64 `json:"toneBias" desc:"Percent trimmed from both tone extremes." min:"0" max:"40"`
-	Easing      string  `json:"easing" desc:"Tone distribution across the ramp." enum:"linear|in-quad|out-quad|in-out-quad|in-out-cubic|in-out-sine"`
-	OnTargetLc  float64 `json:"onTargetLc" desc:"APCA Lc the -on text colour must reach against its tone." min:"0" max:"108"`
-	DimTargetLc float64 `json:"dimTargetLc" desc:"APCA Lc the -dim colour aims for against its tone." min:"0" max:"108"`
+	Palette  int     `json:"palette" min:"0" max:"40"`
+	Steps    int     `json:"steps" desc:"Tones per ramp." min:"3" max:"20"`
+	ToneBias float64 `json:"toneBias" desc:"Percent trimmed from both tone extremes." min:"0" max:"40"`
+	Lightest float64 `json:"lightest" desc:"OKLCH lightness percent of the light end of every ramp, before tone bias." min:"50" max:"100"`
+	Darkest  float64 `json:"darkest" desc:"OKLCH lightness percent of the dark end of every ramp, before tone bias." min:"0" max:"50"`
+	// NeutralChroma and NeutralVariantChroma tint the neutral roles with the primary hue.
+	NeutralChroma        float64 `json:"neutralChroma" desc:"OKLCH chroma of the neutral role." min:"0" max:"0.1"`
+	NeutralVariantChroma float64 `json:"neutralVariantChroma" desc:"OKLCH chroma of the neutral-variant role." min:"0" max:"0.1"`
+	Easing               string  `json:"easing" desc:"Tone distribution across the ramp." enum:"linear|in-quad|out-quad|in-out-quad|in-out-cubic|in-out-sine"`
+	OnTargetLc           float64 `json:"onTargetLc" desc:"APCA Lc the -on text colour must reach against its tone." min:"0" max:"108"`
+	DimTargetLc          float64 `json:"dimTargetLc" desc:"APCA Lc the -dim colour aims for against its tone." min:"0" max:"108"`
 	// Scheme picks how dark mode is emitted.
 	Scheme string `json:"scheme" desc:"media: a prefers-color-scheme block plus [data-theme] overrides. light-dark: one light-dark() pair per token, switched by color-scheme." enum:"media|light-dark"`
 	// Invert swaps which ramp end is light in dark mode; when false dark mode reuses light tones.
@@ -384,6 +389,9 @@ func (c *Config) Validate() error {
 	}
 	if !slices.Contains([]string{"media", "light-dark"}, c.Colors.Theme.Scheme) {
 		errs = append(errs, fmt.Errorf("colors.theme.scheme %q must be media or light-dark", c.Colors.Theme.Scheme))
+	}
+	if th := c.Colors.Theme; th.Darkest >= th.Lightest {
+		errs = append(errs, fmt.Errorf("colors.theme.darkest (%g) must be below lightest (%g)", th.Darkest, th.Lightest))
 	}
 	if c.Colors.Theme.Steps < 3 {
 		errs = append(errs, errors.New("colors.theme.steps must be at least 3"))

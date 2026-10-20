@@ -75,8 +75,8 @@ func Theme(t config.Theme) ThemeResult {
 		{"primary", "P", p},
 		{"secondary", "S", s},
 		{"tertiary", "T", te},
-		{"neutral", "N", color.OKLCH{L: p.L, C: 0.012, H: p.H}},
-		{"neutral-variant", "NV", color.OKLCH{L: p.L, C: 0.03, H: p.H}},
+		{"neutral", "N", color.OKLCH{L: p.L, C: t.NeutralChroma, H: p.H}},
+		{"neutral-variant", "NV", color.OKLCH{L: p.L, C: t.NeutralVariantChroma, H: p.H}},
 		{"error", "E", color.OKLCH{L: 0.58, C: 0.19, H: 27}},
 		{"caution", "C", color.OKLCH{L: 0.75, C: 0.15, H: 75}},
 	}
@@ -162,7 +162,7 @@ func ease(name string, t float64) float64 {
 
 // toneLightness gives step i's OKLCH lightness, light (i=0) to dark.
 func toneLightness(t config.Theme, i int) float64 {
-	hi, lo := 0.985, 0.13
+	hi, lo := t.Lightest/100, t.Darkest/100
 	trim := (hi - lo) * t.ToneBias / 100
 	hi, lo = hi-trim, lo+trim
 	return hi - (hi-lo)*ease(t.Easing, float64(i)/float64(t.Steps-1))

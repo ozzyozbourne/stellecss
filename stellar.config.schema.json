@@ -309,6 +309,12 @@
         "theme": {
           "additionalProperties": false,
           "properties": {
+            "darkest": {
+              "description": "OKLCH lightness percent of the dark end of every ramp, before tone bias.",
+              "maximum": 50,
+              "minimum": 0,
+              "type": "number"
+            },
             "dimTargetLc": {
               "description": "APCA Lc the -dim colour aims for against its tone.",
               "maximum": 108,
@@ -350,6 +356,24 @@
             "invert": {
               "description": "Dark mode mirrors each ramp so step 1 stays the background end.",
               "type": "boolean"
+            },
+            "lightest": {
+              "description": "OKLCH lightness percent of the light end of every ramp, before tone bias.",
+              "maximum": 100,
+              "minimum": 50,
+              "type": "number"
+            },
+            "neutralChroma": {
+              "description": "OKLCH chroma of the neutral role.",
+              "maximum": 0.1,
+              "minimum": 0,
+              "type": "number"
+            },
+            "neutralVariantChroma": {
+              "description": "OKLCH chroma of the neutral-variant role.",
+              "maximum": 0.1,
+              "minimum": 0,
+              "type": "number"
             },
             "onTargetLc": {
               "description": "APCA Lc the -on text colour must reach against its tone.",
@@ -399,6 +423,10 @@
             "palette",
             "steps",
             "toneBias",
+            "lightest",
+            "darkest",
+            "neutralChroma",
+            "neutralVariantChroma",
             "easing",
             "onTargetLc",
             "dimTargetLc",

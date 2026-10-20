@@ -14,6 +14,12 @@
     {{.Select "Easing" "colors.theme.easing" "linear=Linear" "in-quad=In Quad" "out-quad=Out Quad" "in-out-quad=In-Out Quad" "in-out-cubic=In-Out Cubic" "in-out-sine=In-Out Sine"}}
   </div>
   {{.Range "Tone bias" "colors.theme.toneBias" "0" "40" "1" "%"}}
+  <div class="grid-2">
+    {{.Num "Lightest (L%)" "colors.theme.lightest" "0.5"}}
+    {{.Num "Darkest (L%)" "colors.theme.darkest" "0.5"}}
+    {{.Num "Neutral chroma" "colors.theme.neutralChroma" "0.001"}}
+    {{.Num "Neutral variant chroma" "colors.theme.neutralVariantChroma" "0.001"}}
+  </div>
 </fieldset>
 <fieldset>
   <legend>APCA targets</legend>
