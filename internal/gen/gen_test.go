@@ -89,3 +89,23 @@ func TestLightDarkSchemeEmitsOnePairPerToken(t *testing.T) {
 		t.Error("no light-dark() pair for --primary-1")
 	}
 }
+
+// Hex output must keep each colour's exact sRGB value, so a project that
+// asserts computed rgb() colours sees the same ones it configured.
+func TestHexColorFormatKeepsNamedColoursExact(t *testing.T) {
+	c := config.Default()
+	c.Bundle.ColorFormat = "hex"
+	c.Colors.Theme.Scheme = "light-dark"
+	css := Build(c).CSS
+	if strings.Contains(css, "oklch(") {
+		t.Error("hex format still emits oklch()")
+	}
+	for _, tok := range []string{"--named-go-0: #00add8;", "--named-rust-0: #dea584;", "--named-ubuntu-0: #e95420;"} {
+		if !strings.Contains(css, tok) {
+			t.Errorf("missing %s", tok)
+		}
+	}
+	if !strings.Contains(css, "--primary-1: light-dark(#") {
+		t.Error("light-dark pairs not converted")
+	}
+}

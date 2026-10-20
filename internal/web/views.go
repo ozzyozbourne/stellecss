@@ -153,7 +153,7 @@ func (v *view) SectionCSS() string {
 	}
 	for _, s := range v.B.Result.Sections {
 		if s.ID == id {
-			return gen.Render([]gen.Section{s}, gen.RenderOptions{Namespace: v.Cfg.Bundle.Namespace, ColorFallbacks: v.Cfg.Bundle.ColorFallbacks})
+			return gen.Render([]gen.Section{s}, gen.RenderOptions{Namespace: v.Cfg.Bundle.Namespace, ColorFallbacks: v.Cfg.Bundle.ColorFallbacks, Hex: v.Cfg.Bundle.ColorFormat == "hex"})
 		}
 	}
 	return "/* section disabled */"

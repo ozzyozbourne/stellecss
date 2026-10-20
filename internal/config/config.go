@@ -273,6 +273,7 @@ type Bundle struct {
 	Namespace         string `json:"namespace" desc:"Selector that receives the custom properties."`
 	Overwrite         bool   `json:"overwrite"`
 	ColorFallbacks    bool   `json:"colorFallbacks" desc:"Emit a #rrggbb declaration before each oklch() one."`
+	ColorFormat       string `json:"colorFormat" desc:"oklch writes colours as oklch(); hex writes them as #rrggbb, for projects whose tests or tooling compare computed sRGB values." enum:"oklch|hex"`
 	FontImports       bool   `json:"fontImports"`
 	ReducedMotion     bool   `json:"reducedMotion" desc:"Zero durations under prefers-reduced-motion: reduce."`
 	MinifyWhitespace  bool   `json:"minifyWhitespace"`
@@ -392,6 +393,9 @@ func (c *Config) Validate() error {
 	}
 	if th := c.Colors.Theme; th.Darkest >= th.Lightest {
 		errs = append(errs, fmt.Errorf("colors.theme.darkest (%g) must be below lightest (%g)", th.Darkest, th.Lightest))
+	}
+	if !slices.Contains([]string{"oklch", "hex"}, c.Bundle.ColorFormat) {
+		errs = append(errs, fmt.Errorf("bundle.colorFormat %q must be oklch or hex", c.Bundle.ColorFormat))
 	}
 	if c.Colors.Theme.Steps < 3 {
 		errs = append(errs, errors.New("colors.theme.steps must be at least 3"))

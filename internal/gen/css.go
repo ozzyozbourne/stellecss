@@ -2,8 +2,11 @@
 package gen
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/ozzyozbourne/stellecss/internal/color"
 )
 
 // Decl is one declaration. Fallback, when set, is written first as a plain
@@ -33,6 +36,21 @@ type Section struct {
 type RenderOptions struct {
 	Namespace      string
 	ColorFallbacks bool
+	// Hex rewrites every oklch() in a value as #rrggbb; fallbacks are then redundant.
+	Hex bool
+}
+
+var oklchRe = regexp.MustCompile(`oklch\(([\d.]+)% ([\d.]+) ([\d.]+)\)`)
+
+// toHex rewrites the oklch() colours in v, as rendered by [color.OKLCH.CSS], to #rrggbb.
+func toHex(v string) string {
+	return oklchRe.ReplaceAllStringFunc(v, func(m string) string {
+		p := oklchRe.FindStringSubmatch(m)
+		l, _ := strconv.ParseFloat(p[1], 64)
+		c, _ := strconv.ParseFloat(p[2], 64)
+		h, _ := strconv.ParseFloat(p[3], 64)
+		return color.OKLCH{L: l / 100, C: c, H: h}.Hex()
+	})
 }
 
 // Render writes sections as readable CSS. Minification is esbuild's job.
@@ -59,6 +77,9 @@ func Render(sections []Section, o RenderOptions) string {
 			} else {
 				b.WriteString(indent + sel + " {\n")
 				for _, d := range bl.Decls {
+					if o.Hex {
+						d.Value, d.Fallback = toHex(d.Value), ""
+					}
 					if o.ColorFallbacks && d.Fallback != "" {
 						b.WriteString(indent + "  " + d.Name + ": " + d.Fallback + ";\n")
 					}

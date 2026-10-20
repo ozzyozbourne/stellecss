@@ -601,7 +601,7 @@
     "import": {
       "disabled": false,
       "urls": [
-        "https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800,900|inconsolata:400,700\u0026display=swap"
+        "https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800,900|inconsolata:400,700&display=swap"
       ]
     },
     "weights": {
@@ -845,6 +845,7 @@
     "sourcemap": "none",
     "sourcesContent": true,
     "sourceRoot": "",
-    "lineLimit": 0
+    "lineLimit": 0,
+    "colorFormat": "oklch"
   }
 }

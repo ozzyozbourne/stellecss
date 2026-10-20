@@ -74,7 +74,7 @@ func Build(c *config.Config) *Result {
 	if b.Len() > 0 {
 		b.WriteByte('\n')
 	}
-	b.WriteString(Render(r.Sections, RenderOptions{Namespace: c.Bundle.Namespace, ColorFallbacks: c.Bundle.ColorFallbacks}))
+	b.WriteString(Render(r.Sections, RenderOptions{Namespace: c.Bundle.Namespace, ColorFallbacks: c.Bundle.ColorFallbacks, Hex: c.Bundle.ColorFormat == "hex"}))
 	r.CSS = b.String()
 	return r
 }

@@ -80,6 +80,7 @@
 <fieldset>
   <legend>Includes</legend>
   <p class="hint">Control which optional layers are included in the bundle.</p>
+  {{.Select "Colour format" "bundle.colorFormat" "oklch=oklch()" "hex=#rrggbb"}}
   {{.Toggle "Color fallbacks?" "Emit fallback color declarations for broader browser compatibility." "bundle.colorFallbacks"}}
   {{.Toggle "Font imports?" "Emit configured @import font URLs at the top of the bundle." "bundle.fontImports"}}
   {{.Toggle "Reduced motion overrides?" "Emit @media (prefers-reduced-motion: reduce) overrides for animation durations." "bundle.reducedMotion"}}
@@ -112,6 +113,7 @@
     <tr><td>File size (brotli)</td><td><code>{{.KiB .B.BrotliSize}}</code></td></tr>
     <tr><td>Output<small>Absolute path: {{.Abs}}</small></td><td><code>{{$b.Output}}</code></td></tr>
     <tr><td>Namespace</td><td><code>{{$b.Namespace}}</code></td></tr>
+    <tr><td>Colour format</td><td><code>{{$b.ColorFormat}}</code></td></tr>
     <tr><td>Color fallbacks</td><td><code>{{if $b.ColorFallbacks}}Yes{{else}}No{{end}}</code></td></tr>
     <tr><td>Font imports</td><td><code>{{if $b.FontImports}}Yes{{else}}No{{end}}</code></td></tr>
     <tr><td>Reduced motion overrides</td><td><code>{{if $b.ReducedMotion}}Yes{{else}}No{{end}}</code></td></tr>

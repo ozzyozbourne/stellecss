@@ -120,7 +120,7 @@ func Default() *Config {
 			},
 		},
 		Bundle: Bundle{
-			Output: "css/stellar.css", Namespace: ":root", Overwrite: true,
+			Output: "css/stellar.css", Namespace: ":root", Overwrite: true, ColorFormat: "oklch",
 			FontImports: true, ReducedMotion: true,
 			Sourcemap: "none", SourcesContent: true,
 		},

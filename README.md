@@ -35,7 +35,7 @@ Requires Go 1.27.3.
 - **Colors:** theme (image chips, harmony modes, ranked mini palettes, eased tone ramps, APCA `-on`/`-dim` targets, dark mode as `prefers-color-scheme` + `[data-theme]` or `light-dark()`), named brand and language colours with relative steps, chart qualitative and diverging palettes, code syntax palettes, gradients.
 - **Fonts:** families (Modern Font Stacks plus 12 UI-library presets), imports, weights, fluid sizes, letter spacing, line heights.
 - **Surface and motion:** radius, border widths, layered shadows, durations and easings, with optional reduced-motion overrides.
-- **Export:** readable/compact presets, output path, namespace, colour fallbacks, font imports, esbuild minify flags, source maps and line limit, with live size stats.
+- **Export:** readable/compact presets, output path, namespace, colour format (`oklch()` or `#rrggbb`), colour fallbacks, font imports, esbuild minify flags, source maps and line limit, with live size stats.
 
 ## Live refresh
 
