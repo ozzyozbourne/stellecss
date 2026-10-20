@@ -1,0 +1,167 @@
+{{define "settings/general/viewport"}}
+<fieldset>
+  <legend>Viewport range</legend>
+  <p class="hint">Fluid tokens reach their minimum at the min width and their maximum at the max width.</p>
+  <div class="grid-2">
+    {{.Num "Min viewport (px)" "general.viewport.min" "1"}}
+    {{.Num "Max viewport (px)" "general.viewport.max" "1"}}
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Base font size</legend>
+  <p class="hint">Pixels per rem, applied to the root element.</p>
+  {{.Num "Base font size (px)" "general.viewport.baseFontSize" "1"}}
+</fieldset>
+{{end}}
+
+{{define "preview/general/viewport"}}
+<table>
+  <thead><tr><th scope="col">Name</th><th scope="col">Value</th></tr></thead>
+  <tbody>
+    <tr><td><code>--viewport-min</code></td><td>{{fmt .VP.Min}}px</td></tr>
+    <tr><td><code>--viewport-max</code></td><td>{{fmt .VP.Max}}px</td></tr>
+    <tr><td><code>--viewport-base-font-size</code></td><td>{{fmt .VP.BaseFontSize}}px</td></tr>
+  </tbody>
+</table>
+<figure class="viewport-track">
+  <div class="track"><span class="marker" data-style:inset-inline-start="Math.min(100, Math.max(0, ($_pw - {{.VP.Min}}) / ({{.VP.Max}} - {{.VP.Min}}) * 100)) + '%'"></span></div>
+  <figcaption><span>{{fmt .VP.Min}}px</span><span>Preview at <output data-text="$_pw + 'px'"></output></span><span>{{fmt .VP.Max}}px</span></figcaption>
+</figure>
+{{end}}
+
+{{define "scale-settings"}}{{$p := .P}}{{$v := .V}}
+<fieldset>
+  <legend>Base range</legend>
+  <p class="hint">Set the minimum and maximum rem values for the scale.</p>
+  <div class="grid-2">
+    {{$v.Num "Base min (rem)" (print $p ".baseMin") "0.05"}}
+    {{$v.Num "Base max (rem)" (print $p ".baseMax") "0.05"}}
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Ratio range</legend>
+  <p class="hint">Interpolate between these scale ratios across the viewport range.</p>
+  <div class="grid-2">
+    {{$v.RatioSelect "Min ratio" (print $p ".scaleMin")}}
+    {{$v.RatioSelect "Max ratio" (print $p ".scaleMax")}}
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Steps</legend>
+  <p class="hint">Choose how many negative and positive steps to emit.</p>
+  <div class="grid-2">
+    {{$v.Num "Negative steps" (print $p ".negativeSteps") "1"}}
+    {{$v.Num "Positive steps" (print $p ".positiveSteps") "1"}}
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Pairs</legend>
+  <p class="hint">Combine two steps into a single token.</p>
+  {{range $i, $x := .Pairs}}
+  <div class="item-row">
+    {{$v.Num "From" (print $p ".pairs." $i ".from") "1"}}
+    {{$v.Num "To" (print $p ".pairs." $i ".to") "1"}}
+    {{template "remove" (dict "Path" (print $p ".pairs") "I" $i "From" $v.Sec.Key)}}
+  </div>
+  {{else}}<p class="hint">No pairs added yet.</p>{{end}}
+  {{template "list-actions" (dict "Path" (print $p ".pairs") "Label" "Add pair" "From" $v.Sec.Key)}}
+</fieldset>
+<fieldset>
+  <legend>Named tokens</legend>
+  <p class="hint">Label specific size values for semantic use.</p>
+  {{range $i, $x := .Named}}
+  <div class="item-row">
+    {{$v.Text "Name" (print $p ".named." $i ".name")}}
+    {{$v.Num "Min" (print $p ".named." $i ".min") "0.05"}}
+    {{$v.Num "Max" (print $p ".named." $i ".max") "0.05"}}
+    {{template "remove" (dict "Path" (print $p ".named") "I" $i "From" $v.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" (print $p ".named") "Label" "Add named token" "From" $v.Sec.Key)}}
+</fieldset>
+{{end}}
+
+{{define "settings/general/size"}}{{template "scale-settings" (dict "V" . "P" "general.size" "Pairs" .Cfg.General.Size.Pairs "Named" .Cfg.General.Size.Named)}}{{end}}
+
+{{define "preview/general/size"}}{{$vp := .VP}}
+<table class="scale">
+  <thead><tr><th scope="col">Name</th><th scope="col">Value</th><th scope="col">Preview</th></tr></thead>
+  <tbody>
+  {{range .SizeRows}}
+    <tr>
+      <td><code>--{{.Name}}</code></td>
+      <td class="value"><span data-text="{{js (.Expr $vp)}}.toFixed(3).replace(/\.?0+$/, '') + 'rem'"></span><small data-text="({{js (.Expr $vp)}} * {{$vp.BaseFontSize}}).toFixed(1).replace(/\.0$/, '') + 'px'"></small></td>
+      <td><span class="bar" data-style:inline-size="({{js (.Expr $vp)}} * {{$vp.BaseFontSize}}) + 'px'"></span></td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>
+{{end}}
+
+{{define "settings/general/zindex"}}
+<fieldset>
+  <legend>Layers</legend>
+  <p class="hint">Lowest first. Leave gaps so components can stack locally.</p>
+  {{range $i, $l := .Cfg.General.ZIndexes.Levels}}
+  <div class="item-row">
+    {{$.Text "Name" (print "general.zindexes.levels." $i ".name")}}
+    {{$.Num "Value" (print "general.zindexes.levels." $i ".value") "1"}}
+    {{template "remove" (dict "Path" "general.zindexes.levels" "I" $i "From" $.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" "general.zindexes.levels" "Label" "Add layer" "From" .Sec.Key)}}
+</fieldset>
+{{end}}
+
+{{define "preview/general/zindex"}}
+<table>
+  <thead><tr><th scope="col">Name</th><th scope="col">Value</th><th scope="col">Use</th></tr></thead>
+  <tbody>
+  {{range .Cfg.General.ZIndexes.Levels}}<tr><td><code>--z-{{.Name}}</code></td><td>{{.Value}}</td><td>{{.Description}}</td></tr>{{end}}
+  </tbody>
+</table>
+<div class="stack-demo" aria-hidden="true">
+  {{range $i, $l := .Cfg.General.ZIndexes.Levels}}<span style="--i: {{$i}}; z-index: var(--z-{{$l.Name}})">{{$l.Name}}</span>{{end}}
+</div>
+{{end}}
+
+{{define "settings/general/aspect-ratio"}}
+<fieldset>
+  <legend>Ratios</legend>
+  {{range $i, $r := .Cfg.General.AspectRatio.Ratios}}
+  <div class="item-row">
+    {{$.Text "Name" (print "general.aspectRatio.ratios." $i ".name")}}
+    {{$.Num "Width" (print "general.aspectRatio.ratios." $i ".width") "0.001"}}
+    {{$.Num "Height" (print "general.aspectRatio.ratios." $i ".height") "0.001"}}
+    {{template "remove" (dict "Path" "general.aspectRatio.ratios" "I" $i "From" $.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" "general.aspectRatio.ratios" "Label" "Add ratio" "From" .Sec.Key)}}
+</fieldset>
+{{end}}
+
+{{define "preview/general/aspect-ratio"}}
+<ul class="aspect-grid">
+  {{range .Cfg.General.AspectRatio.Ratios}}<li><div style="aspect-ratio: var(--aspect-ratio-{{.Name}})"></div><code>--aspect-ratio-{{.Name}}</code><small>{{fmt .Width}} / {{fmt .Height}}</small></li>{{end}}
+</ul>
+{{end}}
+
+{{define "settings/general/normalize"}}
+<fieldset>
+  <legend>Rules</legend>
+  {{.Toggle "Border box" "box-sizing: border-box on every element and pseudo-element." "general.normalize.boxSizing"}}
+  {{.Toggle "Reset margins" "Remove default margins so spacing comes from tokens." "general.normalize.resetMargins"}}
+  {{.Toggle "Block media" "img, svg, video and canvas render as blocks capped at their container." "general.normalize.mediaBlock"}}
+  {{.Toggle "Inherit fonts" "Form controls use the surrounding font." "general.normalize.inheritFonts"}}
+  {{.Toggle "Text wrap" "Balance headings and prettify paragraphs." "general.normalize.textWrap"}}
+  {{.Toggle "Smooth scroll" "Smooth scrolling unless reduced motion is requested." "general.normalize.smoothScroll"}}
+</fieldset>
+{{end}}
+
+{{define "preview/general/normalize"}}
+<article class="normalize-sample">
+  <h3>A balanced heading that wraps across lines evenly</h3>
+  <p>Paragraphs use pretty wrapping, so the last line never strands a single word when the measure allows it.</p>
+  <label>Inherited font <input type="text" value="form controls match body text"></label>
+</article>
+{{end}}

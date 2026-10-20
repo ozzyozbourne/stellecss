@@ -1,0 +1,105 @@
+{{define "settings/fonts/families"}}
+<fieldset>
+  <legend>Presets</legend>
+  <p class="hint">Swap the sans, serif and mono stacks to match a UI library.</p>
+  <div class="preset-grid">
+    {{range presets}}<button type="button" class="small" aria-pressed="{{if eq . $.Cfg.Fonts.Families.Preset}}true{{else}}false{{end}}" data-on:click="@post('/action/font-preset?v=' + encodeURIComponent({{.}}) + '&from=' + {{$.Sec.Key}})">{{.}}</button>{{end}}
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Families</legend>
+  {{range $i, $f := .Cfg.Fonts.Families.Families}}
+  <div class="item-row">
+    {{$.Text "" (print "fonts.families.families." $i ".name")}}
+    {{template "remove" (dict "Path" "fonts.families.families" "I" $i "From" $.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" "fonts.families.families" "Label" "Add family" "From" .Sec.Key)}}
+</fieldset>
+{{end}}
+
+{{define "preview/fonts/families"}}
+<table>
+  <thead><tr><th scope="col">Name</th><th scope="col">Preview</th></tr></thead>
+  <tbody>
+  {{range .Cfg.Fonts.Families.Families}}<tr><td><code>--font-{{.Name}}</code><small class="stack">{{stack .Stack}}</small></td><td class="font-sample" style="font-family: var(--font-{{.Name}})">The quick brown fox jumps over the lazy dog</td></tr>{{end}}
+  </tbody>
+</table>
+{{end}}
+
+{{define "settings/fonts/import"}}
+<fieldset>
+  <legend>Stylesheet URLs</legend>
+  <p class="hint">Emitted as @import at the top of the bundle when Bundle → Font imports is on.</p>
+  {{range $i, $u := .Cfg.Fonts.Import.URLs}}
+  <div class="item-row">
+    {{$.Text "" (print "fonts.import.urls." $i)}}
+    {{template "remove" (dict "Path" "fonts.import.urls" "I" $i "From" $.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" "fonts.import.urls" "Label" "Add URL" "From" .Sec.Key)}}
+</fieldset>
+{{end}}
+
+{{define "preview/fonts/import"}}
+<pre><code>{{range .B.Result.Imports}}@import "{{.}}";
+{{else}}/* no imports */{{end}}</code></pre>
+<p class="hint">Font imports are {{if .Cfg.Bundle.FontImports}}on{{else}}off{{end}} in the bundle settings.</p>
+{{end}}
+
+{{define "number-list"}}{{$v := .V}}
+<fieldset>
+  <legend>{{.Legend}}</legend>
+  {{range $i, $x := .Items}}
+  <div class="item-row">
+    {{$v.Text "Name" (print $.P "." $i ".name")}}
+    {{$v.Num "Value" (print $.P "." $i ".value") $.Step}}
+    {{template "remove" (dict "Path" $.P "I" $i "From" $v.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" .P "Label" "Add" "From" $v.Sec.Key)}}
+</fieldset>
+{{end}}
+
+{{define "settings/fonts/weights"}}{{template "number-list" (dict "V" . "P" "fonts.weights.weights" "Items" .Cfg.Fonts.Weights.Weights "Legend" "Weights" "Step" "100")}}{{end}}
+
+{{define "preview/fonts/weights"}}
+<table>
+  <thead><tr><th scope="col">Name</th><th scope="col">Value</th><th scope="col">Preview</th></tr></thead>
+  <tbody>{{range .Cfg.Fonts.Weights.Weights}}<tr><td><code>--font-weight-{{.Name}}</code></td><td>{{fmt .Value}}</td><td class="font-sample" style="font-weight: var(--font-weight-{{.Name}})">Straight answers</td></tr>{{end}}</tbody>
+</table>
+{{end}}
+
+{{define "settings/fonts/sizes"}}{{template "scale-settings" (dict "V" . "P" "fonts.sizes" "Pairs" .Cfg.Fonts.Sizes.Pairs "Named" .Cfg.Fonts.Sizes.Named)}}{{end}}
+
+{{define "preview/fonts/sizes"}}{{$vp := .VP}}
+<table class="scale">
+  <thead><tr><th scope="col">Name</th><th scope="col">Value</th><th scope="col">Preview</th></tr></thead>
+  <tbody>
+  {{range .FontRows}}
+    <tr>
+      <td><code>--{{.Name}}</code></td>
+      <td class="value"><span data-text="{{.Expr $vp}}.toFixed(3).replace(/\.?0+$/, '') + 'rem'"></span><small data-text="({{.Expr $vp}} * {{$vp.BaseFontSize}}).toFixed(1).replace(/\.0$/, '') + 'px'"></small></td>
+      <td class="font-sample nowrap" data-style:font-size="({{.Expr $vp}} * {{$vp.BaseFontSize}}) + 'px'">Stellar</td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>
+{{end}}
+
+{{define "settings/fonts/letter-spacing"}}{{template "number-list" (dict "V" . "P" "fonts.letterSpacing.values" "Items" .Cfg.Fonts.LetterSpacing.Values "Legend" "Tracking (em)" "Step" "0.005")}}{{end}}
+
+{{define "preview/fonts/letter-spacing"}}
+<table>
+  <thead><tr><th scope="col">Name</th><th scope="col">Value</th><th scope="col">Preview</th></tr></thead>
+  <tbody>{{range .Cfg.Fonts.LetterSpacing.Values}}<tr><td><code>--letter-spacing-{{.Name}}</code></td><td>{{fmt .Value}}em</td><td class="font-sample" style="letter-spacing: var(--letter-spacing-{{.Name}})">PITA CONSULTING</td></tr>{{end}}</tbody>
+</table>
+{{end}}
+
+{{define "settings/fonts/line-heights"}}{{template "number-list" (dict "V" . "P" "fonts.lineHeights.values" "Items" .Cfg.Fonts.LineHeights.Values "Legend" "Line heights" "Step" "0.05")}}{{end}}
+
+{{define "preview/fonts/line-heights"}}
+<div class="line-heights">
+  {{range .Cfg.Fonts.LineHeights.Values}}<figure><figcaption><code>--line-height-{{.Name}}</code> {{fmt .Value}}</figcaption><p style="line-height: var(--line-height-{{.Name}})">Stop chatting with self-affirming LLMs. Talk to developers that only hallucinate when it comes to your feelings.</p></figure>{{end}}
+</div>
+{{end}}

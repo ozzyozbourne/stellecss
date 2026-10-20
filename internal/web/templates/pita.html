@@ -1,0 +1,40 @@
+{{define "pita"}}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PITA Consulting</title>
+<link id="stellar-css" rel="stylesheet" href="/assets/css/stellar/{{.Hash}}">
+<link rel="stylesheet" href="/static/pita.css">
+<script type="module" src="/static/datastar.js"></script>
+</head>
+<body data-signals:theme="'light'" data-attr:data-theme="$theme" data-init="@get('/live-refresh', {openWhenHidden: true})">
+  <!-- Navigation header -->
+  <header>
+    <h1>PITA Consulting</h1>
+    <div>
+      <a href="#login">Log in</a>
+      <button type="button" data-show="$theme === 'light'" data-on:click="$theme = 'dark'">Dark</button>
+      <button type="button" data-show="$theme === 'dark'" data-on:click="$theme = 'light'" style="display: none">Light</button>
+      <button type="button" class="cta-button">Get started</button>
+    </div>
+  </header>
+  <!-- Main section -->
+  <main>
+    <section>
+      <a href="#">PITA Consulting loses $1M in Q1 earnings to AI startups</a>
+      <h2>PITA gives you straight answers to full-stack questions.</h2>
+      <p>Stop chatting with self-affirming LLMs. Talk to developers that only hallucinate when it comes to your feelings.</p>
+      <form data-on:submit__prevent="el.reset()">
+        <input type="email" placeholder="Enter your email" aria-label="Email">
+        <button type="submit">Request invite <span>→</span></button>
+      </form>
+    </section>
+    <section>
+      <div>
+        <img src="/static/img/pita.jpg" alt="A stack of fresh pita breads">
+      </div>
+    </section>
+  </main>
+</body>
+</html>{{end}}

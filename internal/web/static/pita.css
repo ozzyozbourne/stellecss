@@ -1,0 +1,156 @@
+/* The PITA demo: semantic HTML styled only through Stellar tokens and nested
+   CSS, so every editor change restyles it through /live-refresh. */
+body {
+  min-block-size: 100dvh;
+  background: var(--neutral-1);
+  color: var(--neutral-12);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-0);
+  line-height: var(--line-height-normal);
+}
+
+header {
+  background-color: var(--neutral-2);
+  margin-inline: var(--size-2);
+  padding: var(--size-6) var(--size-4);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-4);
+  align-items: center;
+  justify-content: space-between;
+
+  h1 {
+    font-family: var(--font-didone);
+    font-size: var(--font-size-5);
+    font-weight: var(--font-weight-normal);
+  }
+
+  a {
+    font-size: var(--font-size-0);
+    color: var(--neutral-12);
+    text-decoration: none;
+    transition: color var(--anim-duration-base) var(--ease-standard);
+
+    &:hover {
+      color: var(--neutral-11);
+    }
+  }
+
+  div {
+    display: flex;
+    gap: var(--size-4);
+    align-items: center;
+  }
+
+  button {
+    font-size: var(--font-size-0);
+    padding: var(--size-2) var(--size-4);
+    border: var(--border-width-thin) solid var(--neutral-4);
+    border-radius: var(--radius-lg);
+    background: var(--neutral-2);
+    color: var(--neutral-12);
+    cursor: pointer;
+  }
+
+  .cta-button {
+    background: var(--primary-7);
+    color: var(--primary-7-on);
+    border-color: transparent;
+    box-shadow: var(--shadow-2);
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-6);
+  margin: var(--size-4) var(--size-2);
+  padding: var(--size-8) var(--size-6);
+  background: var(--neutral-3);
+  border-radius: var(--radius-2xl);
+
+  & section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-6);
+  }
+
+  & section > a {
+    align-self: start;
+    padding: var(--size-2) var(--size-4);
+    border-radius: var(--radius-lg);
+    background: var(--neutral-12);
+    color: var(--neutral-1);
+    font-size: var(--font-size--1);
+    text-decoration: none;
+  }
+
+  h2 {
+    font-family: var(--font-didone);
+    font-size: var(--font-size-6);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-tight);
+  }
+
+  p {
+    font-size: var(--font-size-1);
+    color: var(--neutral-11);
+    font-weight: var(--font-weight-light);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-3);
+    max-inline-size: 32rem;
+  }
+
+  input {
+    padding: var(--size-3) var(--size-4);
+    border: var(--border-width-thin) solid var(--neutral-6);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--neutral-12);
+  }
+
+  form button {
+    padding: var(--size-3) var(--size-4);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--primary-7);
+    color: var(--primary-7-on);
+    font-size: var(--font-size-1);
+    cursor: pointer;
+    transition: background var(--anim-duration-fast) var(--ease-out);
+
+    &:hover {
+      background: var(--primary-8);
+    }
+  }
+
+  img {
+    inline-size: 100%;
+    aspect-ratio: var(--aspect-ratio-landscape);
+    object-fit: cover;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-4);
+  }
+}
+
+@media (min-width: 900px) {
+  main {
+    flex-direction: row;
+    align-items: center;
+
+    & section {
+      flex: 1;
+
+      &:first-of-type {
+        max-width: 700px;
+      }
+    }
+  }
+}

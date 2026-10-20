@@ -1,0 +1,11 @@
+# Build output
+/stellar
+/bin/
+/css/
+*.css.map
+# Theme images uploaded through the editor
+/theme.*
+# Orb and editor state
+/.amp/
+.env
+.env.*

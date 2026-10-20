@@ -1,0 +1,27 @@
+version: "3"
+
+tasks:
+  build:
+    desc: Build the stellar binary.
+    cmds:
+      - go build -o bin/stellar ./cmd/stellar
+
+  css:
+    desc: Write the bundle configured in stellar.config.json.
+    cmds:
+      - go run ./cmd/stellar build -config stellar.config.json
+
+  schema:
+    desc: Regenerate stellar.config.schema.json from the config types.
+    cmds:
+      - go run ./cmd/stellar schema > stellar.config.schema.json
+
+  serve:
+    desc: Run the editor on :7331.
+    cmds:
+      - go run ./cmd/stellar serve -config stellar.config.json -addr :7331
+
+  test:
+    cmds:
+      - go vet ./...
+      - go test ./...

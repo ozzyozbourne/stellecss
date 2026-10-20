@@ -1,0 +1,231 @@
+{{define "settings/colors/theme"}}{{$t := .Cfg.Colors.Theme}}
+<fieldset>
+  <legend>Harmony mode</legend>
+  <p class="hint">Best ranks every harmony; pick one to only see palettes of that kind.</p>
+  <div class="segmented" role="radiogroup" aria-label="Harmony mode">
+    {{range modes}}<label><input type="radio" name="harmony" value="{{.}}" data-bind="cfg.colors.theme.harmonyMode"{{if eq . $t.HarmonyMode}} checked{{end}}>{{title .}}</label>{{end}}
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Palette curve</legend>
+  <p class="hint">How lightness is spread across each ramp.</p>
+  <div class="grid-2">
+    {{.Num "Tones per ramp" "colors.theme.steps" "1"}}
+    {{.Select "Easing" "colors.theme.easing" "linear=Linear" "in-quad=In Quad" "out-quad=Out Quad" "in-out-quad=In-Out Quad" "in-out-cubic=In-Out Cubic" "in-out-sine=In-Out Sine"}}
+  </div>
+  {{.Range "Tone bias" "colors.theme.toneBias" "0" "40" "1" "%"}}
+</fieldset>
+<fieldset>
+  <legend>APCA targets</legend>
+  <p class="hint">Lightness contrast each -on and -dim text colour must reach on its tone.</p>
+  <div class="grid-2">
+    {{.Num "On (Lc)" "colors.theme.onTargetLc" "1"}}
+    {{.Num "Dim (Lc)" "colors.theme.dimTargetLc" "1"}}
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Dark mode</legend>
+  {{.Select "Scheme output" "colors.theme.scheme" "media=prefers-color-scheme + [data-theme]" "light-dark=light-dark() pairs"}}
+  {{.Toggle "Invert ramps" "Step 1 stays the background end in dark mode." "colors.theme.invert"}}
+</fieldset>
+<fieldset>
+  <legend>Mini palettes</legend>
+  <p class="hint">Pick a theme candidate from the extracted options.</p>
+  <ol class="candidates">
+  {{range $i, $c := .Theme.Candidates}}
+    <li><button type="button" data-on:click="@post('/action/palette?v=' + {{$i}} + '&from=' + {{$.Sec.Key}})"{{if eq $i $t.Palette}} aria-pressed="true"{{else}} aria-pressed="false"{{end}}>
+      <span class="chips">{{range $j, $s := $c.Seeds}}<span style="background: {{css $s}}">{{index (list "P" "S" "T") $j}}</span>{{end}}<span class="n">N</span><span class="nv">NV</span><span class="e">E</span><span class="c">C</span></span>
+      <span class="meta"><span class="stars" aria-label="{{$c.Stars}} stars">{{stars $c.Stars}}</span><span>{{$c.Name}}</span></span>
+    </button></li>
+  {{end}}
+  </ol>
+</fieldset>
+{{end}}
+
+{{define "preview/colors/theme"}}
+<div class="theme-grid">
+  <figure class="card image-card">
+    <figcaption class="eyebrow">Image</figcaption>
+    <div class="chip-image">
+      <img src="{{.ImageURL}}" alt="Theme source image">
+      {{range .ChipDots}}<span class="dot" style="left: {{.X}}; top: {{.Y}}; background: {{css .Color}}"></span>{{end}}
+    </div>
+    <div class="upload">
+      <label for="theme-image">Extract from image</label>
+      <input id="theme-image" type="file" accept="image/png,image/jpeg,image/gif" data-bind="themeImage">
+      <button type="button" class="small" data-on:click="@post('/action/theme-image?from=' + {{.Sec.Key}})">Extract chips</button>
+    </div>
+  </figure>
+  <figure class="card">
+    <figcaption class="eyebrow">Harmony map</figcaption>
+    <svg class="wheel" viewBox="-100 -100 200 200" role="img" aria-label="Chips by hue and chroma, with the chosen primary, secondary and tertiary">
+      <defs><radialGradient id="wheel-fade"><stop offset="0" stop-color="white" stop-opacity=".9"/><stop offset="1" stop-color="white" stop-opacity="0"/></radialGradient></defs>
+      <circle r="96" class="wheel-bg"/>
+      {{range seq 36}}<path d="M0 0 L{{index (wheelEdge .) 0}} {{index (wheelEdge .) 1}} A96 96 0 0 0 {{index (wheelEdge (add . 1)) 0}} {{index (wheelEdge (add . 1)) 1}} Z" fill="{{wheelHue .}}"/>{{end}}
+      <circle r="96" fill="url(#wheel-fade)"/>
+      {{range .Theme.Chips}}{{$p := wheel .}}<circle cx="{{index $p 0}}" cy="{{index $p 1}}" r="4" fill="{{hex .}}" class="chip"/>{{end}}
+      {{range $j, $s := .Theme.Chosen.Seeds}}{{$p := wheel $s}}<g class="seed"><circle cx="{{index $p 0}}" cy="{{index $p 1}}" r="9" fill="{{hex $s}}"/><text x="{{index $p 0}}" y="{{index $p 1}}">{{index (list "P" "S" "T") $j}}</text></g>{{end}}
+    </svg>
+    <p class="caption">{{.Theme.Chosen.Name}} <span class="stars">{{stars .Theme.Chosen.Stars}}</span></p>
+  </figure>
+</div>
+<h3 class="eyebrow">Extracted chips ({{len .Theme.Chips}})</h3>
+<ul class="chip-row">{{range .Theme.Chips}}<li style="background: {{css .}}" title="{{hex .}}"></li>{{end}}</ul>
+<h3 class="eyebrow">Ramps</h3>
+<table class="ramps">
+  <thead><tr><th scope="col">Role</th>{{range $i, $_ := (index .Roles 0).Light}}<th scope="col">{{add $i 1}}</th>{{end}}</tr></thead>
+  <tbody>
+  {{range .Roles}}{{$r := .}}
+    <tr><th scope="row">{{.Name}}</th>{{range $i, $_ := .Light}}<td style="background: var(--{{$r.Name}}-{{add $i 1}}); color: var(--{{$r.Name}}-{{add $i 1}}-on)">Aa<small style="color: var(--{{$r.Name}}-{{add $i 1}}-dim)">dim</small></td>{{end}}</tr>
+  {{end}}
+  </tbody>
+</table>
+{{end}}
+
+{{define "settings/colors/named"}}
+<fieldset>
+  <legend>Tokens</legend>
+  <div class="button-row">
+    <button type="button" class="small" data-on:click="@post('/action/upsert-brands?from=' + {{.Sec.Key}})">Upsert brands</button>
+    <button type="button" class="small" data-on:click="@post('/action/upsert-languages?from=' + {{.Sec.Key}})">Upsert languages</button>
+    <button type="button" class="small" data-on:click="@post('/action/sort-named?from=' + {{.Sec.Key}})">Sort</button>
+    <button type="button" class="small danger" data-on:click="@post('/list/clear?path=colors.named.tokens&from=' + {{.Sec.Key}})">Remove all</button>
+  </div>
+  <p class="hint">{{len .Cfg.Colors.Named.Tokens}} tokens</p>
+  {{range $i, $t := .Cfg.Colors.Named.Tokens}}
+  <div class="item-row">
+    {{$.Color "" (print "colors.named.tokens." $i ".color")}}
+    {{$.Text "" (print "colors.named.tokens." $i ".name")}}
+    {{template "remove" (dict "Path" "colors.named.tokens" "I" $i "From" $.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" "colors.named.tokens" "Label" "Add colour" "From" .Sec.Key)}}
+</fieldset>
+<fieldset>
+  <legend>Relative steps</legend>
+  <div class="grid-2">
+    {{.Num "Negative steps" "colors.named.negativeSteps" "1"}}
+    {{.Num "Positive steps" "colors.named.positiveSteps" "1"}}
+    {{.Num "Hue / step (°)" "colors.named.huePerStep" "0.5"}}
+    {{.Num "Chroma / step (%)" "colors.named.chromaPerStep" "0.5"}}
+    {{.Num "Tone / step" "colors.named.tonePerStep" "0.5"}}
+  </div>
+</fieldset>
+<fieldset>
+  <legend>APCA targets</legend>
+  <div class="grid-2">
+    {{.Num "On (Lc)" "colors.named.onTargetLc" "1"}}
+    {{.Num "Dim (Lc)" "colors.named.dimTargetLc" "1"}}
+  </div>
+</fieldset>
+{{end}}
+
+{{define "preview/colors/named"}}
+<table class="named">
+  <thead><tr><th scope="col">Name</th>{{range (index .Named 0).Swatches}}<th scope="col">{{.Step}}</th>{{end}}</tr></thead>
+  <tbody>
+  {{range .Named}}{{$n := .Name}}<tr><th scope="row"><code>{{$n}}</code></th>{{range .Swatches}}<td style="background: var(--named-{{$n}}-{{.Step}}); color: var(--named-{{$n}}-{{.Step}}-on)">Aa</td>{{end}}</tr>{{end}}
+  </tbody>
+</table>
+{{end}}
+
+{{define "settings/colors/charts"}}
+<fieldset>
+  <legend>Qualitative</legend>
+  {{.Toggle "Export qualitative palette" "" "colors.charts.qualitative"}}
+  {{.Num "Count (25 possible)" "colors.charts.qualitativeCount" "1"}}
+</fieldset>
+<fieldset>
+  <legend>Diverging</legend>
+  <div class="grid-2">
+    {{.Num "Count (12 possible)" "colors.charts.divergingCount" "1"}}
+    {{.Num "Tone steps" "colors.charts.toneSteps" "1"}}
+  </div>
+  {{range $i, $_ := .Charts.Diverging}}{{$.Toggle (print "Export diverging " (add $i 1)) "" (print "colors.charts.diverging." $i)}}{{end}}
+</fieldset>
+<fieldset>
+  <legend>APCA targets</legend>
+  <div class="grid-2">
+    {{.Num "On (Lc)" "colors.charts.onTargetLc" "1"}}
+    {{.Num "Dim (Lc)" "colors.charts.dimTargetLc" "1"}}
+  </div>
+</fieldset>
+{{end}}
+
+{{define "preview/colors/charts"}}
+<h3 class="eyebrow">Qualitative</h3>
+<figure class="bar-chart" aria-label="Sample bar chart">
+  {{range $i, $q := .Charts.Qualitative}}<span style="block-size: {{index (list "62" "84" "45" "70" "92" "38" "77" "55" "66" "48" "88" "59" "41" "73" "52" "80" "36" "64" "90" "47" "69" "58" "83" "44" "75") $i}}%; background: var(--chart-qualitative-{{add $i 1}}); color: var(--chart-qualitative-{{add $i 1}}-on)">{{add $i 1}}</span>{{end}}
+</figure>
+<h3 class="eyebrow">Diverging</h3>
+<ul class="diverging">
+  {{range $i, $d := .Charts.Diverging}}<li><code>--chart-diverging-{{add $i 1}}</code><span class="ramp">{{range $s, $c := $d}}<span style="background: var(--chart-diverging-{{add $i 1}}-step-{{add $s 1}}, {{css $c}})"></span>{{end}}</span></li>{{end}}
+</ul>
+{{end}}
+
+{{define "settings/colors/code"}}
+<fieldset>
+  <legend>Contrast</legend>
+  <div class="grid-2">
+    {{.Num "Text (Lc)" "colors.code.onTargetLc" "1"}}
+    {{.Num "Dim (Lc)" "colors.code.dimTargetLc" "1"}}
+    {{.Num "Surface (Lc)" "colors.code.surfaceTargetLc" "1"}}
+  </div>
+  {{.Toggle "Invert light/dark" "Use the dark palette in light mode and the light one in dark mode." "colors.code.invertLightDark"}}
+</fieldset>
+<fieldset>
+  <legend>Variants</legend>
+  <p class="hint">Mixes of theme roles ranked by how far apart their hues sit.</p>
+  <ol class="candidates">
+  {{range $i, $v := .CodeVariants}}
+    <li><button type="button" aria-pressed="{{if eq $i $.Cfg.Colors.Code.Variant}}true{{else}}false{{end}}" data-on:click="@post('/action/code-variant?v=' + {{$i}} + '&from=' + {{$.Sec.Key}})">
+      <span class="chips">{{range (list (index $.Roles $v.Keyword) (index $.Roles $v.String) (index $.Roles $v.Function))}}<span style="background: {{css (index .Light 6).Bg}}"></span>{{end}}</span>
+      <span class="meta"><span class="stars">{{stars $v.Stars}}</span><span>{{$v.Name}}</span></span>
+    </button></li>
+  {{end}}
+  </ol>
+</fieldset>
+{{end}}
+
+{{define "preview/colors/code"}}
+<pre class="code-sample"><code><span class="ln">1</span><span class="comment">// Patch the stylesheet link on every open page.</span>
+<span class="ln">2</span><span class="keyword">func</span> <span class="function">liveRefresh</span><span class="punctuation">(</span><span class="variable">w</span> <span class="type">http.ResponseWriter</span><span class="punctuation">,</span> <span class="variable">r</span> <span class="operator">*</span><span class="type">http.Request</span><span class="punctuation">) {</span>
+<span class="ln current">3</span>  <span class="variable">sse</span> <span class="operator">:=</span> <span class="function">datastar.NewSSE</span><span class="punctuation">(</span><span class="variable">w</span><span class="punctuation">,</span> <span class="variable">r</span><span class="punctuation">)</span>
+<span class="ln">4</span>  <span class="keyword">for</span> <span class="variable">hash</span> <span class="operator">:=</span> <span class="keyword">range</span> <span class="variable">updates</span> <span class="punctuation">{</span>
+<span class="ln">5</span>    <span class="variable">sse</span><span class="punctuation">.</span><span class="function">PatchElements</span><span class="punctuation">(</span><span class="string">`&lt;link id="stellar-css" href="/assets/css/stellar/`</span> <span class="operator">+</span> <span class="variable">hash</span> <span class="operator">+</span> <span class="string">`"&gt;`</span><span class="punctuation">)</span>
+<span class="ln">6</span>  <span class="punctuation">}</span> <span class="comment">// retries: </span><span class="number">3</span><span class="comment">, timeout: </span><span class="constant">nil</span>
+<span class="ln">7</span><span class="punctuation">}</span>
+<span class="removed">- color: #0066cc;</span>
+<span class="added">+ color: var(--primary-7);</span></code></pre>
+<table>
+  <thead><tr><th scope="col">Token</th><th scope="col">Swatch</th></tr></thead>
+  <tbody>{{range .CodeTokens}}<tr><td><code>--code-{{.}}</code></td><td><span class="swatch" style="background: var(--code-{{.}})"></span></td></tr>{{end}}</tbody>
+</table>
+{{end}}
+
+{{define "settings/colors/gradients"}}
+<fieldset>
+  <legend>Stops</legend>
+  {{.Num "color-mix stops per gradient" "colors.gradients.stops" "1"}}
+  <p class="hint">Stops at {{range $i, $s := .Stops}}{{if $i}}, {{end}}{{$s}}%{{end}}.</p>
+</fieldset>
+<fieldset>
+  <legend>Gradients</legend>
+  {{range $i, $g := .Cfg.Colors.Gradients.Items}}
+  <div class="item-row gradient-row">
+    {{$.Text "Name" (print "colors.gradients.items." $i ".name")}}
+    {{$.Num "Angle" (print "colors.gradients.items." $i ".angle") "1"}}
+    {{$.Text "From" (print "colors.gradients.items." $i ".from")}}
+    {{$.Text "To" (print "colors.gradients.items." $i ".to")}}
+    {{template "remove" (dict "Path" "colors.gradients.items" "I" $i "From" $.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" "colors.gradients.items" "Label" "Add gradient" "From" .Sec.Key)}}
+</fieldset>
+{{end}}
+
+{{define "preview/colors/gradients"}}
+<ul class="gradients">
+  {{range .Cfg.Colors.Gradients.Items}}<li><span style="background: var(--gradient-{{.Name}})"></span><code>--gradient-{{.Name}}</code><small>{{.Angle}}° · {{.From}} → {{.To}}</small></li>{{end}}
+</ul>
+{{end}}

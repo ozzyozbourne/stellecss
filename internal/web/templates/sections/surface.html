@@ -1,0 +1,127 @@
+{{define "settings/surface/radius"}}{{template "number-list" (dict "V" . "P" "surface.radius.values" "Items" .Cfg.Surface.Radius.Values "Legend" "Radii (rem)" "Step" "0.125")}}{{end}}
+
+{{define "preview/surface/radius"}}
+<ul class="tiles">
+  {{range .Cfg.Surface.Radius.Values}}<li><span style="border-radius: var(--radius-{{.Name}})"></span><code>--radius-{{.Name}}</code></li>{{end}}
+  <li><span style="border-radius: var(--radius-round)"></span><code>--radius-round</code></li>
+</ul>
+{{end}}
+
+{{define "settings/surface/borders"}}{{template "number-list" (dict "V" . "P" "surface.borders.values" "Items" .Cfg.Surface.Borders.Values "Legend" "Widths (px)" "Step" "0.5")}}{{end}}
+
+{{define "preview/surface/borders"}}
+<ul class="tiles">
+  {{range .Cfg.Surface.Borders.Values}}<li><span style="border: var(--border-width-{{.Name}}) solid currentColor; background: none"></span><code>--border-width-{{.Name}}</code></li>{{end}}
+</ul>
+{{end}}
+
+{{define "settings/surface/shadows"}}
+<fieldset>
+  <legend>Elevation</legend>
+  {{.Num "Steps" "surface.shadows.steps" "1"}}
+  {{.Range "Tint hue" "surface.shadows.hue" "0" "360" "1" "°"}}
+  {{.Range "Strength" "surface.shadows.strength" "0" "60" "1" "%"}}
+</fieldset>
+{{end}}
+
+{{define "preview/surface/shadows"}}
+<ul class="tiles shadows">
+  {{range seq .Cfg.Surface.Shadows.Steps}}<li><span style="box-shadow: var(--shadow-{{add . 1}})"></span><code>--shadow-{{add . 1}}</code></li>{{end}}
+</ul>
+{{end}}
+
+{{define "settings/motion/durations"}}{{template "number-list" (dict "V" . "P" "motion.durations" "Items" .Cfg.Motion.Durations "Legend" "Durations (ms)" "Step" "10")}}{{end}}
+
+{{define "preview/motion/durations"}}
+<ul class="motion">
+  {{range .Cfg.Motion.Durations}}<li><code>--anim-duration-{{.Name}}</code><small>{{fmt .Value}}ms</small><span class="lane"><span class="puck" style="animation-duration: max(var(--anim-duration-{{.Name}}), 1ms)"></span></span></li>{{end}}
+</ul>
+<p class="hint">Reduced-motion overrides are {{if .Cfg.Bundle.ReducedMotion}}on{{else}}off{{end}} in the bundle settings.</p>
+{{end}}
+
+{{define "settings/motion/easings"}}
+<fieldset>
+  <legend>Easings</legend>
+  {{range $i, $e := .Cfg.Motion.Easings}}
+  <div class="item-row">
+    {{$.Text "Name" (print "motion.easings." $i ".name")}}
+    {{$.Text "Value" (print "motion.easings." $i ".value")}}
+    {{template "remove" (dict "Path" "motion.easings" "I" $i "From" $.Sec.Key)}}
+  </div>
+  {{end}}
+  {{template "list-actions" (dict "Path" "motion.easings" "Label" "Add easing" "From" .Sec.Key)}}
+</fieldset>
+{{end}}
+
+{{define "preview/motion/easings"}}
+<ul class="motion">
+  {{range .Cfg.Motion.Easings}}<li><code>--ease-{{.Name}}</code><small></small><span class="lane"><span class="puck" style="animation-duration: 1.6s; animation-timing-function: var(--ease-{{.Name}})"></span></span></li>{{end}}
+</ul>
+{{end}}
+
+{{define "settings/export/bundle"}}
+<fieldset>
+  <legend>Bundle preset</legend>
+  <p class="hint">Quickly switch between readable and compact output defaults.</p>
+  <div class="grid-2">
+    <button type="button" data-on:click="@post('/action/bundle-preset?v=readable&from=' + {{.Sec.Key}})">Readable</button>
+    <button type="button" data-on:click="@post('/action/bundle-preset?v=compact&from=' + {{.Sec.Key}})">Compact</button>
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Output</legend>
+  <p class="hint">Choose where the bundled CSS is written and which selector it targets.</p>
+  <div class="grid-2">
+    {{.Text "Output file" "bundle.output"}}
+    {{.Text "Namespace" "bundle.namespace"}}
+  </div>
+  {{.Toggle "Overwrite output file" "" "bundle.overwrite"}}
+</fieldset>
+<fieldset>
+  <legend>Includes</legend>
+  <p class="hint">Control which optional layers are included in the bundle.</p>
+  {{.Toggle "Color fallbacks?" "Emit fallback color declarations for broader browser compatibility." "bundle.colorFallbacks"}}
+  {{.Toggle "Font imports?" "Emit configured @import font URLs at the top of the bundle." "bundle.fontImports"}}
+  {{.Toggle "Reduced motion overrides?" "Emit @media (prefers-reduced-motion: reduce) overrides for animation durations." "bundle.reducedMotion"}}
+</fieldset>
+<fieldset>
+  <legend>Minify</legend>
+  <p class="hint">Choose which esbuild minification passes run on the CSS bundle.</p>
+  {{.Toggle "Whitespace" "" "bundle.minifyWhitespace"}}
+  {{.Toggle "Syntax" "" "bundle.minifySyntax"}}
+  {{.Toggle "Identifiers" "" "bundle.minifyIdentifiers"}}
+</fieldset>
+<fieldset>
+  <legend>Source maps</legend>
+  {{.Select "Sourcemap" "bundle.sourcemap" "none=None" "inline=Inline" "external=External"}}
+  {{.Toggle "Sources content" "Embed the original CSS in the source map." "bundle.sourcesContent"}}
+  <div class="grid-2">
+    {{.Text "Source root" "bundle.sourceRoot"}}
+    {{.Num "Line limit" "bundle.lineLimit" "1"}}
+  </div>
+</fieldset>
+<p class="downloads"><a href="/stellar.config.json" download>stellar.config.json</a> · <a href="/stellar.config.schema.json" download>schema</a> · <a href="/assets/css/stellar/{{.B.Hash}}" download="stellar.css">stellar.css</a></p>
+{{end}}
+
+{{define "preview/export/bundle"}}{{$b := .Cfg.Bundle}}
+<table class="bundle-stats">
+  <thead><tr><th scope="col">Setting</th><th scope="col">Value</th></tr></thead>
+  <tbody>
+    <tr><td>Custom properties</td><td><code>{{.B.Properties}}</code></td></tr>
+    <tr><td>File size (raw)</td><td><code>{{.KiB .B.RawSize}}</code></td></tr>
+    <tr><td>File size (brotli)</td><td><code>{{.KiB .B.BrotliSize}}</code></td></tr>
+    <tr><td>Output<small>Absolute path: {{.Abs}}</small></td><td><code>{{$b.Output}}</code></td></tr>
+    <tr><td>Namespace</td><td><code>{{$b.Namespace}}</code></td></tr>
+    <tr><td>Color fallbacks</td><td><code>{{if $b.ColorFallbacks}}Yes{{else}}No{{end}}</code></td></tr>
+    <tr><td>Font imports</td><td><code>{{if $b.FontImports}}Yes{{else}}No{{end}}</code></td></tr>
+    <tr><td>Reduced motion overrides</td><td><code>{{if $b.ReducedMotion}}Yes{{else}}No{{end}}</code></td></tr>
+    <tr><td>Minify</td><td><code>{{.Minify}}</code></td></tr>
+    <tr><td>Sourcemap</td><td><code>{{title $b.Sourcemap}}</code></td></tr>
+    <tr><td>Sources content</td><td><code>{{if $b.SourcesContent}}Include{{else}}Exclude{{end}}</code></td></tr>
+    <tr><td>Source root</td><td><code>{{$b.SourceRoot}}</code></td></tr>
+    <tr><td>Line limit</td><td><code>{{if $b.LineLimit}}{{$b.LineLimit}}{{else}}None{{end}}</code></td></tr>
+  </tbody>
+</table>
+<h3 class="eyebrow">Output</h3>
+<pre class="css-out"><code>{{.CSSHead}}</code></pre>
+{{end}}

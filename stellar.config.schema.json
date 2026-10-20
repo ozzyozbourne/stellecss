@@ -1,0 +1,1214 @@
+{
+  "$id": "https://github.com/ozzyozbourne/stellecss/stellar.config.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "bundle": {
+      "additionalProperties": false,
+      "properties": {
+        "colorFallbacks": {
+          "description": "Emit a #rrggbb declaration before each oklch() one.",
+          "type": "boolean"
+        },
+        "fontImports": {
+          "type": "boolean"
+        },
+        "lineLimit": {
+          "maximum": 100000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "minifyIdentifiers": {
+          "type": "boolean"
+        },
+        "minifySyntax": {
+          "type": "boolean"
+        },
+        "minifyWhitespace": {
+          "type": "boolean"
+        },
+        "namespace": {
+          "description": "Selector that receives the custom properties.",
+          "type": "string"
+        },
+        "output": {
+          "description": "Bundle path relative to the config file.",
+          "type": "string"
+        },
+        "overwrite": {
+          "type": "boolean"
+        },
+        "reducedMotion": {
+          "description": "Zero durations under prefers-reduced-motion: reduce.",
+          "type": "boolean"
+        },
+        "sourceRoot": {
+          "type": "string"
+        },
+        "sourcemap": {
+          "enum": [
+            "none",
+            "inline",
+            "external"
+          ],
+          "type": "string"
+        },
+        "sourcesContent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "output",
+        "namespace",
+        "overwrite",
+        "colorFallbacks",
+        "fontImports",
+        "reducedMotion",
+        "minifyWhitespace",
+        "minifySyntax",
+        "minifyIdentifiers",
+        "sourcemap",
+        "sourcesContent",
+        "sourceRoot",
+        "lineLimit"
+      ],
+      "type": "object"
+    },
+    "colors": {
+      "additionalProperties": false,
+      "properties": {
+        "charts": {
+          "additionalProperties": false,
+          "properties": {
+            "dimTargetLc": {
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "diverging": {
+              "description": "Export flag per diverging palette.",
+              "items": {
+                "type": "boolean"
+              },
+              "maxItems": 12,
+              "type": "array"
+            },
+            "divergingCount": {
+              "maximum": 12,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "onTargetLc": {
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "qualitative": {
+              "description": "Export the qualitative palette.",
+              "type": "boolean"
+            },
+            "qualitativeCount": {
+              "maximum": 25,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "toneSteps": {
+              "maximum": 20,
+              "minimum": 3,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "disabled",
+            "onTargetLc",
+            "dimTargetLc",
+            "qualitativeCount",
+            "qualitative",
+            "divergingCount",
+            "toneSteps",
+            "diverging"
+          ],
+          "type": "object"
+        },
+        "code": {
+          "additionalProperties": false,
+          "properties": {
+            "dimTargetLc": {
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "invertLightDark": {
+              "description": "Swap which palette is used in light and dark mode.",
+              "type": "boolean"
+            },
+            "onTargetLc": {
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "surfaceTargetLc": {
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "variant": {
+              "description": "Index of the chosen syntax palette mix.",
+              "maximum": 40,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "disabled",
+            "onTargetLc",
+            "dimTargetLc",
+            "surfaceTargetLc",
+            "invertLightDark",
+            "variant"
+          ],
+          "type": "object"
+        },
+        "gradients": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "angle": {
+                    "maximum": 360,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "from": {
+                    "description": "Token name without --, e.g. primary-6.",
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "angle",
+                  "from",
+                  "to"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "stops": {
+              "description": "color-mix stops per gradient.",
+              "maximum": 16,
+              "minimum": 2,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "disabled",
+            "stops",
+            "items"
+          ],
+          "type": "object"
+        },
+        "named": {
+          "additionalProperties": false,
+          "properties": {
+            "chromaPerStep": {
+              "description": "Percent chroma change per step.",
+              "maximum": 50,
+              "minimum": -50,
+              "type": "number"
+            },
+            "dimTargetLc": {
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "huePerStep": {
+              "description": "Degrees of hue rotation per step.",
+              "maximum": 60,
+              "minimum": -60,
+              "type": "number"
+            },
+            "negativeSteps": {
+              "maximum": 6,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "onTargetLc": {
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "positiveSteps": {
+              "maximum": 6,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "tokens": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "color": {
+                    "description": "#rrggbb",
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "color"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "tonePerStep": {
+              "description": "OKLCH lightness points per step.",
+              "maximum": 30,
+              "minimum": -30,
+              "type": "number"
+            }
+          },
+          "required": [
+            "disabled",
+            "onTargetLc",
+            "dimTargetLc",
+            "negativeSteps",
+            "positiveSteps",
+            "huePerStep",
+            "chromaPerStep",
+            "tonePerStep",
+            "tokens"
+          ],
+          "type": "object"
+        },
+        "theme": {
+          "additionalProperties": false,
+          "properties": {
+            "dimTargetLc": {
+              "description": "APCA Lc the -dim colour aims for against its tone.",
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "easing": {
+              "description": "Tone distribution across the ramp.",
+              "enum": [
+                "linear",
+                "in-quad",
+                "out-quad",
+                "in-out-quad",
+                "in-out-cubic",
+                "in-out-sine"
+              ],
+              "type": "string"
+            },
+            "harmonyMode": {
+              "description": "How secondary and tertiary hues relate to primary.",
+              "enum": [
+                "best",
+                "complement",
+                "analogous",
+                "triad",
+                "split",
+                "square",
+                "tetradic"
+              ],
+              "type": "string"
+            },
+            "image": {
+              "description": "Image, relative to the config file, that seeds are extracted from. Empty keeps Seeds.",
+              "type": "string"
+            },
+            "invert": {
+              "description": "Dark mode mirrors each ramp so step 1 stays the background end.",
+              "type": "boolean"
+            },
+            "onTargetLc": {
+              "description": "APCA Lc the -on text colour must reach against its tone.",
+              "maximum": 108,
+              "minimum": 0,
+              "type": "number"
+            },
+            "palette": {
+              "maximum": 40,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "scheme": {
+              "description": "media: a prefers-color-scheme block plus [data-theme] overrides. light-dark: one light-dark() pair per token, switched by color-scheme.",
+              "enum": [
+                "media",
+                "light-dark"
+              ],
+              "type": "string"
+            },
+            "seeds": {
+              "description": "Extracted or hand-picked chips as #rrggbb.",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 48,
+              "type": "array"
+            },
+            "steps": {
+              "description": "Tones per ramp.",
+              "maximum": 20,
+              "minimum": 3,
+              "type": "integer"
+            },
+            "toneBias": {
+              "description": "Percent trimmed from both tone extremes.",
+              "maximum": 40,
+              "minimum": 0,
+              "type": "number"
+            }
+          },
+          "required": [
+            "disabled",
+            "image",
+            "seeds",
+            "harmonyMode",
+            "palette",
+            "steps",
+            "toneBias",
+            "easing",
+            "onTargetLc",
+            "dimTargetLc",
+            "scheme",
+            "invert"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "theme",
+        "named",
+        "charts",
+        "code",
+        "gradients"
+      ],
+      "type": "object"
+    },
+    "fonts": {
+      "additionalProperties": false,
+      "properties": {
+        "families": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "families": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "stack": {
+                    "description": "Font faces from highest priority to the generic fallback.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "name",
+                  "stack"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "preset": {
+              "description": "Last applied UI-library preset, informational.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "disabled",
+            "preset",
+            "families"
+          ],
+          "type": "object"
+        },
+        "import": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "urls": {
+              "description": "Stylesheet URLs emitted as @import at the top of the bundle.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "disabled",
+            "urls"
+          ],
+          "type": "object"
+        },
+        "letterSpacing": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "values": {
+              "description": "Values in em.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "disabled",
+            "values"
+          ],
+          "type": "object"
+        },
+        "lineHeights": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "values": {
+              "description": "Unitless line-height multipliers.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "disabled",
+            "values"
+          ],
+          "type": "object"
+        },
+        "sizes": {
+          "additionalProperties": false,
+          "properties": {
+            "baseMax": {
+              "description": "Step 0 at the maximum viewport, in rem.",
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            "baseMin": {
+              "description": "Step 0 at the minimum viewport, in rem.",
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "named": {
+              "description": "Tokens with explicit rem bounds.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "max": {
+                    "description": "Value at the maximum viewport, in rem.",
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "min": {
+                    "description": "Value at the minimum viewport, in rem.",
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "name": {
+                    "description": "Token suffix, lower-case letters, digits and hyphens.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "min",
+                  "max"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "negativeSteps": {
+              "description": "Steps emitted below 0.",
+              "maximum": 10,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "pairs": {
+              "description": "Tokens that span two steps, from one step at the minimum viewport to another at the maximum.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "from": {
+                    "maximum": 30,
+                    "minimum": -10,
+                    "type": "integer"
+                  },
+                  "to": {
+                    "maximum": 30,
+                    "minimum": -10,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "positiveSteps": {
+              "description": "Steps emitted above 0.",
+              "maximum": 30,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "scaleMax": {
+              "description": "Musical ratio applied at the maximum viewport.",
+              "enum": [
+                "Unison",
+                "Minor Second",
+                "Major Second",
+                "Minor Third",
+                "Major Third",
+                "Perfect Fourth",
+                "Augmented Fourth",
+                "Perfect Fifth",
+                "Golden Ratio",
+                "Major Sixth",
+                "Minor Seventh",
+                "Major Seventh",
+                "Octave"
+              ],
+              "type": "string"
+            },
+            "scaleMin": {
+              "description": "Musical ratio applied at the minimum viewport.",
+              "enum": [
+                "Unison",
+                "Minor Second",
+                "Major Second",
+                "Minor Third",
+                "Major Third",
+                "Perfect Fourth",
+                "Augmented Fourth",
+                "Perfect Fifth",
+                "Golden Ratio",
+                "Major Sixth",
+                "Minor Seventh",
+                "Major Seventh",
+                "Octave"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "disabled",
+            "baseMin",
+            "baseMax",
+            "scaleMin",
+            "scaleMax",
+            "negativeSteps",
+            "positiveSteps",
+            "pairs",
+            "named"
+          ],
+          "type": "object"
+        },
+        "weights": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "weights": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "disabled",
+            "weights"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "families",
+        "import",
+        "weights",
+        "sizes",
+        "letterSpacing",
+        "lineHeights"
+      ],
+      "type": "object"
+    },
+    "general": {
+      "additionalProperties": false,
+      "properties": {
+        "aspectRatio": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "ratios": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "height": {
+                    "maximum": 1000,
+                    "minimum": 0.01,
+                    "type": "number"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "width": {
+                    "maximum": 1000,
+                    "minimum": 0.01,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name",
+                  "width",
+                  "height"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "disabled",
+            "ratios"
+          ],
+          "type": "object"
+        },
+        "normalize": {
+          "additionalProperties": false,
+          "properties": {
+            "boxSizing": {
+              "description": "border-box on every element.",
+              "type": "boolean"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "inheritFonts": {
+              "description": "Form controls inherit font.",
+              "type": "boolean"
+            },
+            "mediaBlock": {
+              "description": "img, svg, video and canvas render as blocks capped at their container width.",
+              "type": "boolean"
+            },
+            "resetMargins": {
+              "description": "Remove default margins.",
+              "type": "boolean"
+            },
+            "smoothScroll": {
+              "description": "Smooth scrolling unless reduced motion is requested.",
+              "type": "boolean"
+            },
+            "textWrap": {
+              "description": "Balance headings and prettify paragraphs.",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "disabled",
+            "boxSizing",
+            "resetMargins",
+            "mediaBlock",
+            "inheritFonts",
+            "textWrap",
+            "smoothScroll"
+          ],
+          "type": "object"
+        },
+        "size": {
+          "additionalProperties": false,
+          "properties": {
+            "baseMax": {
+              "description": "Step 0 at the maximum viewport, in rem.",
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            "baseMin": {
+              "description": "Step 0 at the minimum viewport, in rem.",
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "named": {
+              "description": "Tokens with explicit rem bounds.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "max": {
+                    "description": "Value at the maximum viewport, in rem.",
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "min": {
+                    "description": "Value at the minimum viewport, in rem.",
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "name": {
+                    "description": "Token suffix, lower-case letters, digits and hyphens.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "min",
+                  "max"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "negativeSteps": {
+              "description": "Steps emitted below 0.",
+              "maximum": 10,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "pairs": {
+              "description": "Tokens that span two steps, from one step at the minimum viewport to another at the maximum.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "from": {
+                    "maximum": 30,
+                    "minimum": -10,
+                    "type": "integer"
+                  },
+                  "to": {
+                    "maximum": 30,
+                    "minimum": -10,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "positiveSteps": {
+              "description": "Steps emitted above 0.",
+              "maximum": 30,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "scaleMax": {
+              "description": "Musical ratio applied at the maximum viewport.",
+              "enum": [
+                "Unison",
+                "Minor Second",
+                "Major Second",
+                "Minor Third",
+                "Major Third",
+                "Perfect Fourth",
+                "Augmented Fourth",
+                "Perfect Fifth",
+                "Golden Ratio",
+                "Major Sixth",
+                "Minor Seventh",
+                "Major Seventh",
+                "Octave"
+              ],
+              "type": "string"
+            },
+            "scaleMin": {
+              "description": "Musical ratio applied at the minimum viewport.",
+              "enum": [
+                "Unison",
+                "Minor Second",
+                "Major Second",
+                "Minor Third",
+                "Major Third",
+                "Perfect Fourth",
+                "Augmented Fourth",
+                "Perfect Fifth",
+                "Golden Ratio",
+                "Major Sixth",
+                "Minor Seventh",
+                "Major Seventh",
+                "Octave"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "disabled",
+            "baseMin",
+            "baseMax",
+            "scaleMin",
+            "scaleMax",
+            "negativeSteps",
+            "positiveSteps",
+            "pairs",
+            "named"
+          ],
+          "type": "object"
+        },
+        "viewport": {
+          "additionalProperties": false,
+          "properties": {
+            "baseFontSize": {
+              "description": "Pixels per rem.",
+              "maximum": 64,
+              "minimum": 4,
+              "type": "number"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "max": {
+              "description": "Largest supported layout width in px.",
+              "maximum": 8000,
+              "minimum": 120,
+              "type": "number"
+            },
+            "min": {
+              "description": "Smallest supported layout width in px.",
+              "maximum": 4000,
+              "minimum": 120,
+              "type": "number"
+            }
+          },
+          "required": [
+            "disabled",
+            "min",
+            "max",
+            "baseFontSize"
+          ],
+          "type": "object"
+        },
+        "zindexes": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "levels": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "maximum": 2147483647,
+                    "minimum": -1,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "disabled",
+            "levels"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "viewport",
+        "size",
+        "zindexes",
+        "aspectRatio",
+        "normalize"
+      ],
+      "type": "object"
+    },
+    "motion": {
+      "additionalProperties": false,
+      "properties": {
+        "disabled": {
+          "type": "boolean"
+        },
+        "durations": {
+          "description": "Durations in ms.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "easings": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "description": "Any CSS \u003ceasing-function\u003e.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "disabled",
+        "durations",
+        "easings"
+      ],
+      "type": "object"
+    },
+    "surface": {
+      "additionalProperties": false,
+      "properties": {
+        "borders": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "values": {
+              "description": "Border widths in px.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "disabled",
+            "values"
+          ],
+          "type": "object"
+        },
+        "radius": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "values": {
+              "description": "Radii in rem; 9999 emits a pill radius.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "disabled",
+            "values"
+          ],
+          "type": "object"
+        },
+        "shadows": {
+          "additionalProperties": false,
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "hue": {
+              "description": "Shadow tint hue in degrees.",
+              "maximum": 360,
+              "minimum": 0,
+              "type": "number"
+            },
+            "steps": {
+              "maximum": 10,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "strength": {
+              "description": "Opacity of the darkest layer in light mode, percent.",
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            }
+          },
+          "required": [
+            "disabled",
+            "steps",
+            "hue",
+            "strength"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "radius",
+        "borders",
+        "shadows"
+      ],
+      "type": "object"
+    },
+    "version": {
+      "description": "Config format version.",
+      "maximum": 1,
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "version",
+    "general",
+    "colors",
+    "fonts",
+    "surface",
+    "motion",
+    "bundle"
+  ],
+  "title": "Stellar CSS configuration",
+  "type": "object"
+}
